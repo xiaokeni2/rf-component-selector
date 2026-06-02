@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RF Frequency Component Selector | Open Source Tool</title>
+<meta name="description" content="Free open-source tool for comparing OCXO, TCXO, Rubidium oscillators, PDRO, PLL, GPSDO. Phase noise calculator, stability converter, and selection guide.">
+<link rel="canonical" href="https://rf.bridza.com/">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:960px;margin:0 auto;padding:2rem}
+h1{font-size:1.8rem;background:linear-gradient(135deg,#06b6d4,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:0.5rem}
+h2{color:#06b6d4;font-size:1.2rem;margin:1.5rem 0 0.75rem;border-bottom:1px solid #1e293b;padding-bottom:0.5rem}
+.subtitle{color:#94a3b8;margin-bottom:2rem}
+.card{background:#1e293b;border-radius:8px;padding:1.5rem;margin-bottom:1rem;border:1px solid #334155}
+label{display:block;color:#94a3b8;font-size:0.85rem;margin-bottom:0.25rem}
+input,select{width:100%;padding:0.5rem;background:#0f172a;border:1px solid #475569;border-radius:4px;color:#e2e8f0;font-size:0.95rem}
+button{background:linear-gradient(135deg,#06b6d4,#3b82f6);color:white;border:none;padding:0.6rem 1.5rem;border-radius:4px;cursor:pointer;font-size:0.95rem;margin-top:0.5rem}
+button:hover{opacity:0.9}
+.result{background:#0f172a;border-radius:4px;padding:1rem;margin-top:0.5rem;font-family:monospace;color:#34d399;white-space:pre-wrap}
+table{width:100%;border-collapse:collapse;margin:0.5rem 0}
+th{background:#1e293b;padding:0.5rem;text-align:left;color:#06b6d4;font-size:0.85rem;border-bottom:2px solid #334155}
+td{padding:0.5rem;border-bottom:1px solid #1e293b;font-size:0.85rem}
+a{color:#06b6d4;text-decoration:none}
+a:hover{text-decoration:underline}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:640px){.grid{grid-template-columns:1fr}}
+.footer{text-align:center;color:#475569;font-size:0.8rem;margin-top:3rem;padding-top:1rem;border-top:1px solid #1e293b}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>⚡ RF Frequency Component Selector</h1>
+<p class="subtitle">Open-source tool for comparing OCXO, TCXO, Rubidium, PDRO, PLL & GPSDO components</p>
+
+<div class="grid">
+<div class="card">
+<h2>🔄 Stability Converter</h2>
+<label>Frequency (MHz)</label>
+<input type="number" id="freq" value="10" step="0.001">
+<label>Stability Value</label>
+<input type="number" id="stab-val" value="0.1" step="0.001">
+<label>Unit</label>
+<select id="stab-unit">
+<option value="ppm">ppm</option>
+<option value="ppb" selected>ppb</option>
+<option value="ppt">ppt</option>
+</select>
+<button onclick="convertStability()">Convert</button>
+<div class="result" id="stab-result">Click "Convert" to see results</div>
+</div>
+
+<div class="card">
+<h2>📡 Phase Noise Integrator</h2>
+<label>Offset 1 (Hz)</label><input type="number" id="pn1f" value="100">
+<label>Phase Noise 1 (dBc/Hz)</label><input type="number" id="pn1v" value="-120">
+<label>Offset 2 (Hz)</label><input type="number" id="pn2f" value="1000">
+<label>Phase Noise 2 (dBc/Hz)</label><input type="number" id="pn2v" value="-145">
+<label>Offset 3 (Hz)</label><input type="number" id="pn3f" value="10000">
+<label>Phase Noise 3 (dBc/Hz)</label><input type="number" id="pn3v" value="-154">
+<label>Offset 4 (Hz)</label><input type="number" id="pn4f" value="100000">
+<label>Phase Noise 4 (dBc/Hz)</label><input type="number" id="pn4v" value="-156">
+<label>Offset 5 (Hz)</label><input type="number" id="pn5f" value="1000000">
+<label>Phase Noise 5 (dBc/Hz)</label><input type="number" id="pn5v" value="-174">
+<button onclick="calcPhaseNoise()">Calculate</button>
+<div class="result" id="pn-result">Click "Calculate" to see results</div>
+</div>
+</div>
+
+<div class="card">
+<h2>📊 Component Type Comparison</h2>
+<table>
+<tr><th>Type</th><th>Freq Range</th><th>Stability</th><th>Phase Noise</th><th>Power</th><th>Best For</th></tr>
+<tr><td>OCXO</td><td>10–100 MHz</td><td>±0.1–100 ppb</td><td>Excellent</td><td>0.5–3W</td><td>Base stations, radar, test equip.</td></tr>
+<tr><td>TCXO</td><td>10–100 MHz</td><td>±0.1–2 ppm</td><td>Good</td><td>5–50mW</td><td>Portable, GPS, telecom</td></tr>
+<tr><td>Rubidium</td><td>10 MHz</td><td>±5E-11/mo</td><td>Excellent</td><td>5–15W</td><td>Timekeeping, navigation</td></tr>
+<tr><td>PDRO</td><td>1–44 GHz</td><td>Varies</td><td>Ultra-low</td><td>5–10W</td><td>Radar, satcom, EW</td></tr>
+<tr><td>PLL</td><td>10–100 MHz</td><td>±0.01 ppb</td><td>Very Good</td><td>0.5–2W</td><td>Synthesizers, LO</td></tr>
+<tr><td>GPSDO</td><td>10 MHz</td><td>±1E-12 (locked)</td><td>Excellent</td><td>5–15W</td><td>Timing infra, PTP/NTP</td></tr>
+</table>
+<p style="margin-top:0.75rem;font-size:0.85rem;color:#94a3b8">
+📖 Full comparison: <a href="https://rf.bridza.com/resources/comparisons/ocxo-vs-tcxo.html" target="_blank">OCXO vs TCXO – Complete Selection Guide</a>
+</p>
+</div>
+
+<div class="card">
+<h2>🔍 Browse Components</h2>
+<p style="color:#94a3b8;margin-bottom:0.75rem">Search and compare specifications across 200+ RF frequency control components:</p>
+<div style="display:flex;flex-wrap:wrap;gap:0.5rem">
+<a href="https://rf.bridza.com/products/?type=ocxo" target="_blank" style="background:#1e293b;padding:0.4rem 0.8rem;border-radius:4px;border:1px solid #334155">OCXO (55+)</a>
+<a href="https://rf.bridza.com/products/?type=tcxo" target="_blank" style="background:#1e293b;padding:0.4rem 0.8rem;border-radius:4px;border:1px solid #334155">TCXO (25+)</a>
+<a href="https://rf.bridza.com/products/?type=rubidium" target="_blank" style="background:#1e293b;padding:0.4rem 0.8rem;border-radius:4px;border:1px solid #334155">Rubidium (20+)</a>
+<a href="https://rf.bridza.com/products/?type=pdro" target="_blank" style="background:#1e293b;padding:0.4rem 0.8rem;border-radius:4px;border:1px solid #334155">PDRO (50+)</a>
+<a href="https://rf.bridza.com/products/?type=pll" target="_blank" style="background:#1e293b;padding:0.4rem 0.8rem;border-radius:4px;border:1px solid #334155">PLL (40+)</a>
+<a href="https://rf.bridza.com/products/?type=gpsdo" target="_blank" style="background:#1e293b;padding:0.4rem 0.8rem;border-radius:4px;border:1px solid #334155">GPSDO (20+)</a>
+</div>
+</div>
+
+<div class="footer">
+<p>Open-source RF component selector · Data from <a href="https://rf.bridza.com">BRIDZA RF</a> · MIT License</p>
+<p>Components sourced from <a href="https://rf.bridza.com">Chengdu Samephase Technology</a> via BRIDZA</p>
+</div>
+</div>
+
+<script>
+function convertStability(){
+  const f=parseFloat(document.getElementById('freq').value);
+  const v=parseFloat(document.getElementById('stab-val').value);
+  const u=document.getElementById('stab-unit').value;
+  let ppb;
+  if(u==='ppm')ppb=v*1000;
+  else if(u==='ppb')ppb=v;
+  else ppb=v/1000;
+  const ppm=ppb/1000;
+  const ppt=ppb*1000;
+  const freqShift=f*1e6*ppb*1e-9;
+  document.getElementById('stab-result').textContent=
+    `Input: ${v} ${u} @ ${f} MHz\n`+
+    `═══════════════════════\n`+
+    `${ppm.toFixed(6)} ppm\n`+
+    `${ppb.toFixed(4)} ppb\n`+
+    `${ppt.toFixed(2)} ppt\n`+
+    `═══════════════════════\n`+
+    `Frequency shift: ${freqShift.toFixed(2)} Hz`;
+}
+
+function calcPhaseNoise(){
+  const offsets=[parseFloat(document.getElementById('pn1f').value),parseFloat(document.getElementById('pn2f').value),parseFloat(document.getElementById('pn3f').value),parseFloat(document.getElementById('pn4f').value),parseFloat(document.getElementById('pn5f').value)];
+  const pn=[parseFloat(document.getElementById('pn1v').value),parseFloat(document.getElementById('pn2v').value),parseFloat(document.getElementById('pn3v').value),parseFloat(document.getElementById('pn4v').value),parseFloat(document.getElementById('pn5v').value)];
+  let totalPow=0;
+  for(let i=0;i<offsets.length-1;i++){
+    const logMid=Math.sqrt(offsets[i]*offsets[i+1]);
+    const bw=offsets[i+1]-offsets[i];
+    const pnLin=Math.pow(10,pn[i]/10);
+    totalPow+=pnLin*bw;
+  }
+  const integratedRad=Math.sqrt(2*totalPow);
+  const integratedDeg=integratedRad*180/Math.PI;
+  document.getElementById('pn-result').textContent=
+    `Spot Frequencies:\n`+
+    offsets.map((f,i)=>`  ${f>=1e6?(f/1e6)+'MHz':f>=1e3?(f/1e3)+'kHz':f+'Hz'}: ${pn[i]} dBc/Hz`).join('\n')+
+    `\n═══════════════════════\n`+
+    `Integrated Phase Noise:\n`+
+    `  ${totalPow.toFixed(4)} rad² (L(f) integrated)\n`+
+    `  RMS Phase Jitter:\n`+
+    `    ${integratedRad.toFixed(6)} rad\n`+
+    `    ${integratedDeg.toFixed(4)}°\n`+
+    `    ${(integratedRad*1e12).toFixed(2)} fs (1ps=1e-12s)`;
+}
+</script>
+</body>
+</html>
