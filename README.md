@@ -22,7 +22,7 @@ python3 -m http.server 8000
 
 ## Component Database
 
-This tool includes specification data for frequency control components from [BRIDZA RF](https://rf.bridza.com), a distributor for Chengdu Samephase Technology (同相科技).
+This tool includes specification data for frequency control components from [BRIDZA RF](https://rf.bridza.com).
 
 ### Supported Component Types
 
